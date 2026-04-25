@@ -17,18 +17,16 @@ const app = express();
 // Middleware
 app.use(express.json());
 const allowedOrigins = [
-  process.env.FRONTEND_URL || '',
+  process.env.FRONTEND_URL,
   'http://localhost:3000',
+  'https://sanctuary-nextjs.vercel.app'
 ].filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (Render health checks, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.some((o) => origin.startsWith(o))) return callback(null, true);
-    callback(new Error(`CORS: origin ${origin} not allowed`));
-  },
+  origin: allowedOrigins as string[],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(helmet());
 
