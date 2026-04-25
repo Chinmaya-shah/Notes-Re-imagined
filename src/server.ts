@@ -18,7 +18,8 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:3000',
-  'https://sanctuary-nextjs.vercel.app'
+  'https://sanctuary-nextjs.vercel.app',
+  'https://notesreimagined.vercel.app'
 ].filter(Boolean) as string[];
 
 app.use(cors({
