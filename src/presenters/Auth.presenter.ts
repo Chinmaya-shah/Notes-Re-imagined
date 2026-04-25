@@ -24,7 +24,7 @@ export class AuthPresenter {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: this.generateToken(user._id as string),
+      token: this.generateToken((user._id as unknown as string)),
     };
   }
 
@@ -45,17 +45,38 @@ export class AuthPresenter {
       throw error;
     }
 
+    const token = this.generateToken((user._id as unknown as string));
     return {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      token: this.generateToken(user._id as string),
+      user: {
+        id: (user._id as unknown as string),
+        name: user.name,
+        email: user.email,
+      },
+      token,
+    };
+  }
+
+  static async login(email: string, password: string) {
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !(await (user as any).comparePassword(password))) {
+      const error = new Error('Invalid credentials');
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    const token = this.generateToken((user._id as unknown as string));
+    return {
+      user: {
+        id: (user._id as unknown as string),
+        name: user.name,
+        email: user.email,
+      },
+      token,
     };
   }
 
   private static generateToken(id: string) {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'super_secret_jwt_key_reimmagined', {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', {
       expiresIn: '30d',
     });
   }
