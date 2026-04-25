@@ -26,9 +26,6 @@ app.use(cors({
   credentials: true,
 }));
 
-// 2. Explicitly handle preflight for all routes
-app.options('*', cors());
-
 // 3. Other middleware
 app.use(helmet({
   crossOriginResourcePolicy: false,
