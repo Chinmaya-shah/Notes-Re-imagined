@@ -47,7 +47,7 @@ router.post('/', validate(createNoteSchema), async (req: AuthRequest, res: Respo
 
 router.put('/:id', validate(updateNoteSchema), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const note = await NotesPresenter.updateNote(req.params.id, req.user._id, req.body);
+    const note = await NotesPresenter.updateNote((req.params as any).id, req.user._id, req.body);
     res.status(200).json({ success: true, data: note });
   } catch (error) {
     next(error);
@@ -56,7 +56,7 @@ router.put('/:id', validate(updateNoteSchema), async (req: AuthRequest, res: Res
 
 router.delete('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const result = await NotesPresenter.deleteNote(req.params.id, req.user._id);
+    const result = await NotesPresenter.deleteNote((req.params as any).id, req.user._id);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);

@@ -22,7 +22,7 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
 
 router.delete('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const result = await EventsPresenter.deleteEvent(req.params.id, req.user._id);
+    const result = await EventsPresenter.deleteEvent((req.params as any).id, req.user._id);
     res.status(200).json({ success: true, data: result });
   } catch (error) { next(error); }
 });
