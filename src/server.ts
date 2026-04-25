@@ -14,21 +14,26 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(express.json());
+// 1. CORS must be at the very top
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:3000',
   'https://sanctuary-nextjs.vercel.app'
-].filter(Boolean);
+].filter(Boolean) as string[];
 
 app.use(cors({
-  origin: allowedOrigins as string[],
+  origin: allowedOrigins.length > 0 ? allowedOrigins : true,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(helmet());
+
+// 2. Explicitly handle preflight for all routes
+app.options('*', cors());
+
+// 3. Other middleware
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
+app.use(express.json());
 
 // Connect to Database
 connectDB();
